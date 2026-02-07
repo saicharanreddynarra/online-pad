@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Online Code Pad</title>
+</head>
+<body>
+
+<div id="login">
+    <h3>Enter Password</h3>
+    <input type="password" id="pwd">
+    <button onclick="openPad()">Open</button>
+</div>
+
+<div id="padArea" style="display:none;">
+    <textarea id="pad" style="width:100%; height:90vh;"></textarea><br>
+    <button onclick="save()">Save</button>
+</div>
+
+<script>
+let password = "";
+
+function openPad() {
+    password = document.getElementById("pwd").value;
+
+    fetch("/load", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ password })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+    })
+    .then(data => {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("padArea").style.display = "block";
+        document.getElementById("pad").value = data.content;
+    })
+    .catch(() => alert("Wrong password"));
+}
+
+function save() {
+    fetch("/save", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            password: password,
+            content: document.getElementById("pad").value
+        })
+    }).then(() => alert("Saved"));
+}
+</script>
+
+</body>
+</html>
