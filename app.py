@@ -4,8 +4,7 @@ import os
 
 app = Flask(__name__)
 
-# 🔐 Change this password
-PASSWORD = "change123"
+PASSWORD = os.environ.get("PAD_PASSWORD")
 
 DB_NAME = "pad.db"
 
